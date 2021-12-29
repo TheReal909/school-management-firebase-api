@@ -1,1 +1,1 @@
-// for the vue 
+// for the front-end i guess
