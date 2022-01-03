@@ -1,7 +1,9 @@
-"use strict";
+'use strict';
 
 const firebase = require("../db");
 const db = firebase.firestore();
+const admin = require("firebase-admin");
+const FieldValue = admin.firestore.FieldValue;
 
 exports.getAllStudents = async (req, res) => {
   try {
@@ -38,27 +40,43 @@ exports.getAllStudents = async (req, res) => {
 };
 
 exports.createStudent = async (req, res) => {
-  const student = {
+  // const student = {
+  //   studentId: req.body.studentId,
+  //   QrCodeLink: req.body.QrCodeLink,
+  //   dateOfBirth: req.body.dateOfBirth,
+  //   firstname: req.body.firstname,
+  //   lastname: req.body.lastname,
+  //   major: req.body.major,
+  //   registeredCourses: [
+  //     {
+  //       id: req.body.registeredCourses.id,
+  //       courseCode: req.body.registeredCourses.courseCode,
+  //     },
+  //   ],
+  // };
+  try {
+    console.log(req.body.registeredCourses[0].courseCode);
+    console.log(req.body.id);
+    console.log(req.body.registeredCoursesId);
+    // await db.collection("students").doc().create(student);
+    await db.collection("students").add({
     studentId: req.body.studentId,
-    QrCodeLink: req.body.qrCodelink,
+    QrCodeLink: req.body.QrCodeLink,
     dateOfBirth: req.body.dateOfBirth,
     firstname: req.body.firstname,
     lastname: req.body.lastname,
     major: req.body.major,
-    registeredCourses: [
-      {
-        id: req.body.registeredCourses.id,
-        courseCode: req.body.registeredCourses.courseCode,
-      },
-    ],
-  };
-  try {
-    await db.collection("students").doc().create(student);
+    registeredCourses: FieldValue.arrayUnion({
+      registeredCoursesId: req.body.registeredCoursesId,
+      courseCode: req.body.courseCode,
+    })
+    });
     console.log(
       `student with the name ${student.firstname} added to the database`
     );
     return res.status(201).json(student);
   } catch (error) {
+    console.log()
     console.log("there is an error creating students: " + error);
     return res.status(500).send(error);
   }
