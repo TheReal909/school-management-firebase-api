@@ -1,4 +1,4 @@
-'use strict';
+"use strict";
 
 const firebase = require("../db");
 const db = firebase.firestore();
@@ -40,43 +40,27 @@ exports.getAllStudents = async (req, res) => {
 };
 
 exports.createStudent = async (req, res) => {
-  // const student = {
-  //   studentId: req.body.studentId,
-  //   QrCodeLink: req.body.QrCodeLink,
-  //   dateOfBirth: req.body.dateOfBirth,
-  //   firstname: req.body.firstname,
-  //   lastname: req.body.lastname,
-  //   major: req.body.major,
-  //   registeredCourses: [
-  //     {
-  //       id: req.body.registeredCourses.id,
-  //       courseCode: req.body.registeredCourses.courseCode,
-  //     },
-  //   ],
-  // };
+ 
   try {
-    console.log(req.body.registeredCourses[0].courseCode);
-    console.log(req.body.id);
-    console.log(req.body.registeredCoursesId);
-    // await db.collection("students").doc().create(student);
     await db.collection("students").add({
-    studentId: req.body.studentId,
-    QrCodeLink: req.body.QrCodeLink,
-    dateOfBirth: req.body.dateOfBirth,
-    firstname: req.body.firstname,
-    lastname: req.body.lastname,
-    major: req.body.major,
-    registeredCourses: FieldValue.arrayUnion({
-      registeredCoursesId: req.body.registeredCoursesId,
-      courseCode: req.body.courseCode,
-    })
+      studentId: req.body.studentId,
+      QrCodeLink: req.body.QrCodeLink,
+      dateOfBirth: req.body.dateOfBirth,
+      firstname: req.body.firstname,
+      lastname: req.body.lastname,
+      major: req.body.major,
+      courses: FieldValue.arrayUnion({
+        id: req.body.courses.id,
+        courseCode: req.body.courses.courseCode,
+        courseName: req.body.courses.courseName,
+      }),
     });
     console.log(
-      `student with the name ${student.firstname} added to the database`
+      `student with the name ${req.body.firstname} added to the database`
     );
-    return res.status(201).json(student);
+    return res.status(201).send();
   } catch (error) {
-    console.log()
+    console.log();
     console.log("there is an error creating students: " + error);
     return res.status(500).send(error);
   }
@@ -84,7 +68,7 @@ exports.createStudent = async (req, res) => {
 
 exports.getOneSudent = async (req, res) => {
   try {
-    const studentId = req.params.id; 
+    const studentId = req.params.id;
     // const studentREf = db.collection("students");
     // const student = studentREf.where("id" == studentId).get();
     const student = await db.doc("students/" + studentId).get();
