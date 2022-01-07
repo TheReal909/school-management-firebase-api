@@ -6,11 +6,10 @@ const router = express.Router();
 
 router
     .get('/', controller.getAllStudents)
-    .get('/:id', controller.getOneSudent)
+    .get('/:id', controller.getOneStudent)
     .post('/', controller.createStudent)
     .put('/:id', controller.editStudent)
     .delete('/:id', controller.deleteStudent);
-
 
     
 module.exports = router;
