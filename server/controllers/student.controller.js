@@ -21,6 +21,7 @@ exports.getAllStudents = async (req, res) => {
           firstname: doc.data().firstname,
           lastname: doc.data().lastname,
           major: doc.data().major,
+          studentLevel: doc.data().studentLevel,
           // for the semester
           courses: doc.data().courses,
         };
@@ -46,6 +47,7 @@ exports.createStudent = async (req, res) => {
       firstname: req.body.firstname,
       lastname: req.body.lastname,
       major: req.body.major,
+      studentLevel: req.body.studentLevel,
     });
     let major = req.body.major;
     let csCourses = [
